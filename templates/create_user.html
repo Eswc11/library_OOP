@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить студента</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Регистрация нового студента</h2>
+        
+        <form action="/pages/users/create" method="post">
+            <p>
+                <label>Имя:</label><br>
+                <input type="text" name="first_name" required>
+            </p>
+            <p>
+                <label>Фамилия:</label><br>
+                <input type="text" name="last_name">
+            </p>
+            
+            <button type="submit" class="btn btn-add">Сохранить</button>
+            <a href="/pages/users">Назад к списку</a>
+        </form>
+    </div>
+</body>
+</html>
