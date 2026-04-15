@@ -9,21 +9,34 @@ from src.schemas.users import UserCreate
 router = APIRouter(prefix="/pages", tags=["UI"])
 templates = Jinja2Templates(directory="templates")
 
+
 @router.get("/users", response_class=HTMLResponse)
 def get_users_page(request: Request, db: Session = Depends(get_db)):
     repo = UserRepository(db)
     users = repo.get_all()
-    return templates.TemplateResponse("users.html", {"request": request, "users": users})
+
+    # Исправлено: добавлен request как отдельный аргумент
+    return templates.TemplateResponse(
+        request=request,
+        name="users.html",
+        context={"users": users}
+    )
+
 
 @router.get("/users/create", response_class=HTMLResponse)
 def get_create_user_page(request: Request):
-    return templates.TemplateResponse("create_user.html", {"request": request})
+    # Исправлено: приведен к единому стандарту
+    return templates.TemplateResponse(
+        request=request,
+        name="create_user.html"
+    )
+
 
 @router.post("/users/create")
 def create_user_from_page(
-    first_name: str = Form(...),
-    last_name: str = Form(None),
-    db: Session = Depends(get_db)
+        first_name: str = Form(...),
+        last_name: str = Form(None),
+        db: Session = Depends(get_db)
 ):
     repo = UserRepository(db)
     new_user = UserCreate(
@@ -32,6 +45,7 @@ def create_user_from_page(
     )
     repo.create(new_user)
     return RedirectResponse(url="/pages/users", status_code=303)
+
 
 @router.post("/users/delete/{user_id}")
 def delete_user_from_page(user_id: int, db: Session = Depends(get_db)):
